@@ -51,7 +51,7 @@ func formatQuote(myQuote Quote) string {
 
 func main() {
 	// open the json file (which is pulled from link in references)
-	jsonFile, err := os.Open("quotes.json")
+	jsonFile, err := os.Open("C:/Users/jessl/go/src/github.com/jesslam948/gofortune/quotes.json")
 	if err != nil {
 		fmt.Println(err)
 		return
