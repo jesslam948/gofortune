@@ -12,6 +12,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -19,6 +20,33 @@ import (
 type Quote struct {
 	Text   string
 	Author string
+}
+
+func formatQuote(myQuote Quote) string {
+	words := strings.Split(myQuote.Text, " ")
+	count := 0
+	result := ""
+	for i := 0; i < len(words); i++ {
+		if count+len(words[i]) < 60 {
+			result += words[i] + " "
+			count += len(words[i]) + 1
+		} else if count+len(words[i]) == 60 {
+			count = 0
+			result += words[i] + "\n"
+		} else {
+			count = 0
+			result += "\n" + words[i] + " "
+		}
+	}
+
+	// add formatted author string
+	myAuthor := myQuote.Author
+	if len(myQuote.Author) == 0 {
+		myAuthor = "Unknown"
+	}
+	result += "\n" + strings.Repeat(" ", 60-len(myAuthor)-2) + "- " + myAuthor
+
+	return result
 }
 
 func main() {
@@ -37,14 +65,12 @@ func main() {
 	var quoteList []Quote
 	json.Unmarshal(fileBytes, &quoteList)
 
-	// // iterate through each quote and print them
-	// for i := 0; i < 10; i++ {
-	// 	fmt.Printf("\"%s\" - %s\n", quoteList[i].Text, quoteList[i].Author)
-	// }
-
 	// set the seed for rng
 	rand.Seed(time.Now().UnixNano())
 	quoteNum := rand.Intn(len(quoteList))
 	randQuote := quoteList[quoteNum]
-	fmt.Printf("\"%s\" - %s\n", randQuote.Text, randQuote.Author)
+
+	// format the quote
+	fmt.Println(formatQuote(randQuote))
+	// fmt.Printf("\"%s\" - %s\n", randQuote.Text, randQuote.Author)
 }
